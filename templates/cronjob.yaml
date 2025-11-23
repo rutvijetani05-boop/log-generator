@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-generator-cron
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: cron-log-writer
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              command: ["/bin/sh", "/scripts/log-generator.sh"]
+              volumeMounts:
+                - name: script-volume
+                  mountPath: /scripts
+                - name: log-volume
+                  mountPath: /logs
+              env:
+                - name: SIZE_KB
+                  value: "{{ .Values.log.sizeKB }}"
+                - name: INTERVAL_SECONDS
+                  value: "{{ .Values.log.intervalSeconds }}"
+          volumes:
+            - name: script-volume
+              configMap:
+                name: log-generator-script
+                defaultMode: 0777
+            - name: log-volume
+              emptyDir: {}

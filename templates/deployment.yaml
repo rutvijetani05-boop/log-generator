@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      labels:
+        app: log-generator
+    spec:
+      containers:
+        - name: log-writer
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/bin/sh", "/scripts/log-generator.sh"]
+          volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+            - name: log-volume
+              mountPath: /logs
+          env:
+            - name: sizeKB
+              value: "{{ .Values.log.sizeKB }}"
+            - name: INTERVAL_SECONDS
+              value: "{{ .Values.log.intervalSeconds }}"
+      volumes:
+        - name: script-volume
+          configMap:
+            name: log-generator-script
+            defaultMode: 0777
+        - name: log-volume
+          emptyDir: {}
