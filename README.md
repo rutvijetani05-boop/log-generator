@@ -1,4 +1,4 @@
-# Log Generator Helm Chart
+# Log Generator Helm Chart 
 
 This Helm chart deploys a **log generator** on Kubernetes using either a **Deployment** or a **CronJob**. It also includes an **ArgoCD Application** manifest for GitOps-based deployment.
 
