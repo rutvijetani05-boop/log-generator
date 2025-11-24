@@ -1,6 +1,6 @@
 log:
   sizeKB: "100"
-  intervalSeconds: "300" # 100 sec = 5 minutes
+  intervalSeconds: "3600" # 100 sec = 5 minutes
 
 image:
   repository: busybox
